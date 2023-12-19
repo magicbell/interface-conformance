@@ -1,14 +1,8 @@
-# Code Action Provider Sample
+# Go Interface Conformer Extension
 
-This sample shows how to provide code actions in the editor. Code actions are used to implement quick fixes and [refactoring](https://code.visualstudio.com/docs/editor/refactoring) in VS Code.
+This is a VSCode extension that provides code actions for implementing interfaces in Go.
 
-The sample uses the [`CodeActionProvider`](https://code.visualstudio.com/api/references/vscode-api#CodeActionProvider) api to implement a simple set of code actions that convert `:)` to a smiley emoji in markdown files:
-
-![Emoji code actions](example.gif)
-
-Second example of code action provider shows how to associate code actions with diagnostic (e.g. compilation) problems.
-
-![Diagnostic code actions](example_diagnostic.gif)
+![Interface code actions](example.png)
 
 ## VS Code API
 
