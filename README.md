@@ -4,6 +4,16 @@ This is a VSCode extension that provides code actions for implementing interface
 
 ![Interface code actions](example.png)
 
+## Contributing
+
+### Setup
+
+1. Clone this repository
+2. Run `npm install`
+3. Run `npm run watch` to start the compiler in watch mode
+4. Press <kbd>F5</kbd> to open a new window with your extension loaded
+5. Open a Go file and try out the code actions
+
 ## VS Code API
 
 ### `vscode` module
