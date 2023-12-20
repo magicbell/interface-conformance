@@ -1,20 +1,34 @@
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-
-/** To demonstrate code actions associated with Diagnostics problems, this file provides a mock diagnostics entries. */
-
 import * as vscode from 'vscode';
+import { getFuncSignature } from './lib/get-func-signature';
 
 /** Code that is used to associate diagnostic entries with code actions. */
 export const POSSIBLE_RENAME = 'possible_rename';
 
 // Basic regex to mock the interface checks: todo: implement real interface checks
-const check = {
-	pattern: /func\s*\(.*?\)\s+(\w+)\s*\([^)]*input\s*\[\]\s*byte[^)]*\)\s*\([^)]*\)/, // captures any method with signature: (input []byte) (int, error)
-	expectedName: "Write",
-	interfaceName: "io.Writer"
-};
+import interfaces from './interfaces.json';
+import { InterfaceMethod, Method, parseSignature } from './lib/parse-signature';
+
+function getKey(method: Method) {
+	return [...method.params.map(p => p.type), '_', ...method.returns.map(r => r.type)].join('_');
+}
+
+const signatures = new Map<string, Array<InterfaceMethod>>();
+for (const method of interfaces) {
+	const key = getKey(method as InterfaceMethod);
+	if (!signatures.has(key)) {
+		signatures.set(key, []);
+	}
+
+	const methods = signatures.get(key);
+	methods!.push(method as InterfaceMethod);
+}
+
+
+// const check = {
+// 	pattern: /func\s*\(.*?\)\s+(\w+)\s*\([^)]*input\s*\[\]\s*byte[^)]*\)\s*\([^)]*\)/, // captures any method with signature: (input []byte) (int, error)
+// 	expectedName: "Write",
+// 	interfaceName: "io.Writer"
+// };
 
 /**
  * Analyzes the text document for problems. 
@@ -26,28 +40,61 @@ export function refreshDiagnostics(doc: vscode.TextDocument, interfaceDiagnostic
 
 	for (let lineIndex = 0; lineIndex < doc.lineCount; lineIndex++) {
 		const lineOfText = doc.lineAt(lineIndex);
+		const text = lineOfText.text;
 
-		const match = lineOfText.text.match(check.pattern);
-		if (match && match[1] !== check.expectedName) {
-			diagnostics.push(createDiagnostic(doc, lineOfText, lineIndex, match[1]));
+		if (!text.trim().startsWith('func')) continue;
+
+		const signature = getFuncSignature(text);
+		if (!signature) continue;
+
+		const method = parseSignature(signature);
+		const matches = signatures.get(getKey(method));
+		if (!matches) continue;
+
+		// bail when when already match to one of the interfaces
+		const hasMatch = matches.some(m => m.name === method.name);
+		if (hasMatch) continue;
+		
+		// group by method name, some interfaces share signature, like io.Reader.Read and io.Writer.Write
+		// make suggestions for all of them
+		const groupedMatches = new Map<string, Array<InterfaceMethod>>();
+		for (const match of matches) {
+			if (!groupedMatches.has(match.name)) groupedMatches.set(match.name, []);
+			groupedMatches.get(match.name)!.push(match);
+		}
+
+		for (const matches of groupedMatches.values()) {
+			diagnostics.push(createDiagnostic(doc, lineOfText, method, matches));
 		}
 	}
 
 	interfaceDiagnostics.set(doc.uri, diagnostics);
 }
 
-function createDiagnostic(doc: vscode.TextDocument, lineOfText: vscode.TextLine, lineIndex: number, methodName: string): vscode.Diagnostic {
+function joinAnd(items: Array<string>): string {
+	if (items.length === 1) return items[0];
+	if (items.length === 2) return `${items[0]} and ${items[1]}`;
+	return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+}
+
+function createDiagnostic(doc: vscode.TextDocument, lineOfText: vscode.TextLine, method: Method, matches: Array<InterfaceMethod>): vscode.Diagnostic {
 	// find where in the line of that the method name begins
-	const index = lineOfText.text.indexOf(methodName);
+	const startIndex = lineOfText.text.indexOf(method.name);
+	const endIndex = startIndex + method.name.length;
 
 	// create range that represents, where in the document the method is
-	const range = new vscode.Range(lineIndex, index, lineIndex, index + methodName.length);
+	const range = new vscode.Range(lineOfText.lineNumber, startIndex, lineOfText.lineNumber, endIndex);
 
-	const diagnostic = new vscode.Diagnostic(range, `This almost conforms to the ${check.interfaceName} interface, but the method name should be '${check.expectedName}'`,
+	let interfaces = joinAnd(matches.map(m => `${m.package}.${m.interface}`))
+	interfaces += interfaces.length > 1 ? ' interfaces' : ' interface';
+
+	const matchName = matches[0].name;
+
+	const diagnostic = new vscode.Diagnostic(range, `func ${method.name} conforms to the ${interfaces}, but the method name should be '${matchName}'`,
 		vscode.DiagnosticSeverity.Information);
 	diagnostic.code = POSSIBLE_RENAME;
 	diagnostic.relatedInformation = [
-		new vscode.DiagnosticRelatedInformation(new vscode.Location(doc.uri, range), check.expectedName)
+		new vscode.DiagnosticRelatedInformation(new vscode.Location(doc.uri, range), `rename ${method.name} to ${matchName}`)
 	];
 	return diagnostic;
 }

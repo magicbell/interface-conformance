@@ -2,6 +2,8 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"rootDir": ".",
-		"outDir": "../out"
+		"outDir": "../out",
+		"resolveJsonModule": true,
+		"esModuleInterop": true
 	}
 }
