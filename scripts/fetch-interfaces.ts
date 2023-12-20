@@ -186,6 +186,7 @@ async function fetchAndExtract(url: string) {
         for (const signature of methods) {
           const method = parseSignature(signature);
           if (!method.name) continue;
+          if (!method.params.length) continue;
 
           results.push({ 
             package: pkg, 
