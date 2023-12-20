@@ -6,7 +6,7 @@
 		"outDir": "out",
 		"sourceMap": true,
 		"strict": true,
-		"rootDirs": ["src", "scripts"]
+		"rootDir": "."
 	},
 	"exclude": [
 		"node_modules",
