@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import {subscribeToDocumentChanges, POSSIBLE_RENAME} from './diagnostics';
+import { subscribeToDocumentChanges, POSSIBLE_RENAME } from './diagnostics';
 
 const COMMAND = 'interface-conformance.renameMethod';
 
@@ -52,16 +52,22 @@ export class InterfaceConformance implements vscode.CodeActionProvider {
 	}
 
 	private createCommandCodeAction(diagnostic: vscode.Diagnostic): vscode.CodeAction {
-		const action = new vscode.CodeAction('Rename method...', vscode.CodeActionKind.QuickFix);
+		const methodName = /'([^']*)'$/.exec(diagnostic.message)![1];
+		const action = new vscode.CodeAction(`Rename to '${methodName}'`, vscode.CodeActionKind.QuickFix);
+
 		if (diagnostic.relatedInformation) {
-			const uri = diagnostic.relatedInformation[0].location.uri;
-			const range = diagnostic.relatedInformation[0].location.range;
-			const text = diagnostic.relatedInformation[0].message;
+			const info = diagnostic.relatedInformation[0];
+			const uri = info.location.uri;
+			const range = info.location.range;
+			const methodName = /'([^']*)'$/.exec(info.message)![1];
+
 			// we want to 'rename symbol' starting from the method name (index 0) to the end of the identifier
-			action.command = {command: COMMAND, title: 'Rename method...', arguments: [uri, range, text]};
+			action.command = { command: COMMAND, title: `Rename to '${methodName}'`, arguments: [uri, range, methodName]};
 		}
+
 		action.diagnostics = [diagnostic];
 		action.isPreferred = true;
+
 		return action;
 	}
 }

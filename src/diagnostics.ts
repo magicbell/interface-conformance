@@ -94,8 +94,9 @@ function createDiagnostic(doc: vscode.TextDocument, lineOfText: vscode.TextLine,
 		vscode.DiagnosticSeverity.Information);
 	diagnostic.code = POSSIBLE_RENAME;
 	diagnostic.relatedInformation = [
-		new vscode.DiagnosticRelatedInformation(new vscode.Location(doc.uri, range), `rename ${method.name} to ${matchName}`)
+		new vscode.DiagnosticRelatedInformation(new vscode.Location(doc.uri, range), `rename '${method.name}' to '${matchName}'`)
 	];
+
 	return diagnostic;
 }
 
