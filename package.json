@@ -4,6 +4,7 @@
 	"displayName": "Interface Conformance for Go",
 	"version": "0.0.2",
 	"publisher": "magicbell",
+	"license": "MIT",
 	"engines": {
 		"vscode": "^1.73.0"
 	},
