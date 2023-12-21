@@ -20,8 +20,8 @@
 	],
 	"main": "./out/extension.js",
 	"scripts": {
-		"vscode:prepublish": "npm run fetch-interfaces && npm run compile",
-		"compile": "tsc -p ./src",
+		"vscode:prepublish": "npm run fetch-interfaces && npm run build",
+		"build": "tsc -p ./src",
 		"lint": "eslint \"src/**/*.ts\"",
 		"watch": "tsc -watch -p ./src",
 		"fetch-interfaces": "tsx ./scripts/fetch-interfaces.ts --outfile ./src/interfaces.json",
