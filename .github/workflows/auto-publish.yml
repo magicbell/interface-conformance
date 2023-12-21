@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Deploy Extension
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bahmutov/npm-install@v1
+
+      - name: Build
+        run: npm run build
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: './node_modules/.bin/vsce publish -p ${{ secrets.VSCE_PAT }} --no-dependencies'
+          commit: 'chore: version packages'
+          title: 'chore: version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.BELLA_ACTION_TOKEN }}
