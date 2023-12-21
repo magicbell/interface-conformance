@@ -2,7 +2,7 @@
 	"name": "interface-conformance",
 	"private": true,
 	"displayName": "Interface Conformance for Go",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"publisher": "CodeInbox",
 	"icon": "docs/icon.png",
 	"license": "MIT",
@@ -44,4 +44,4 @@
 		"typescript": "^5.3.2",
 		"yargs": "^17.7.2"
 	}
-}
+};

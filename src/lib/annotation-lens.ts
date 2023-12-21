@@ -7,7 +7,7 @@ export class AnnotationLens extends vscode.CodeLens {
 		if (annotation.to.length === 1) {
 			super(from.location.range, {
 				command: "editor.action.goToLocations",
-				title: `@Implements ${annotation.to[0].name}`,
+				title: `Implements ${annotation.to[0].name}`,
 				arguments: [
 					from.location.uri,
 					from.location.range.start,
@@ -18,7 +18,7 @@ export class AnnotationLens extends vscode.CodeLens {
 		} else {
 			super(from.location.range, {
 				command: "editor.action.peekLocations",
-				title: `@Implements Multiple...`,
+				title: `Implements ${annotation.to.length} known interfaces`,
 				arguments: [
 					from.location.uri,
 					from.location.range.start,
