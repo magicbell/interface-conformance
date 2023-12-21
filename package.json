@@ -28,7 +28,6 @@
 		"postinstall": "npm run fetch-interfaces",
 		"package": "vsce package --no-dependencies",
 		"publish": "vsce publish --no-dependencies"
-
 	},
 	"devDependencies": {
 		"@types/node": "^20.10.5",
@@ -37,11 +36,11 @@
 		"@types/yargs": "^17.0.32",
 		"@typescript-eslint/eslint-plugin": "^6.7.0",
 		"@typescript-eslint/parser": "^6.7.0",
+		"@vscode/vsce": "^2.22.0",
 		"eslint": "^8.26.0",
 		"tar": "^6.2.0",
 		"tsx": "^4.7.0",
 		"typescript": "^5.3.2",
-		"vscode-scripts": "^1.0.8",
 		"yargs": "^17.7.2"
 	}
 }
