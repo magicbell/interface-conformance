@@ -2,7 +2,7 @@
 	"name": "interface-conformance",
 	"private": true,
 	"displayName": "Interface Conformance for Go",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"publisher": "CodeInbox",
 	"icon": "docs/icon.png",
 	"license": "MIT",

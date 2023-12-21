@@ -3,7 +3,8 @@
  *--------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { subscribeToDocumentChanges, POSSIBLE_RENAME } from './diagnostics';
+import {subscribeToDocumentChanges, POSSIBLE_RENAME} from './diagnostics';
+import {AnnotationLensProvider} from './lib/annotation-lens-provider';
 
 const COMMAND = 'interface-conformance.renameMethod';
 
@@ -32,6 +33,13 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			});
 		})
+	);
+
+	context.subscriptions.push(
+		vscode.languages.registerCodeLensProvider(
+			[{language: "go"}],
+			new AnnotationLensProvider()
+		)
 	);
 }
 
@@ -62,7 +70,7 @@ export class InterfaceConformance implements vscode.CodeActionProvider {
 			const methodName = /'([^']*)'$/.exec(info.message)![1];
 
 			// we want to 'rename symbol' starting from the method name (index 0) to the end of the identifier
-			action.command = { command: COMMAND, title: `Rename to '${methodName}'`, arguments: [uri, range, methodName]};
+			action.command = {command: COMMAND, title: `Rename to '${methodName}'`, arguments: [uri, range, methodName]};
 		}
 
 		action.diagnostics = [diagnostic];
