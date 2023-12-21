@@ -1,8 +1,9 @@
 # Go Interface Conformer Extension
 
-This is a VSCode extension that provides code actions for implementing interfaces in Go.
+This is a VSCode extension that provides code actions for implementing interfaces in Go. When your method implements an existing interface, this extension will recommend a rename to match convention.
 
-![Interface code actions](example.png)
+![Interface Conformer Actions](./docs/example.png)
+
 
 ## Contributing
 
