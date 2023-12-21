@@ -3,7 +3,8 @@
 	"private": true,
 	"displayName": "Interface Conformance for Go",
 	"version": "0.0.2",
-	"publisher": "magicbell",
+	"publisher": "CodeInbox",
+	"icon": "docs/icon.png",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
