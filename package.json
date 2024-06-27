@@ -8,7 +8,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/magicbell-io/interface-conformance.git"
+		"url": "https://github.com/magicbell/interface-conformance.git"
 	},
 	"engines": {
 		"vscode": "^1.73.0"
